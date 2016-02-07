@@ -23,6 +23,8 @@ import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptEngine;
 
 /**
  * A question the teacher is asking.
@@ -55,6 +57,13 @@ public class Question implements Serializable {
 	private boolean showStatistic; // sic
 	private boolean showAnswer;
 	private boolean abstention;
+	private boolean ignoreCaseSensitive;
+	private boolean ignoreWhitespaces;
+	private boolean ignorePunctuation;
+	private boolean fixedAnswer;
+	private boolean strictMode;
+	private double rating;
+	private String correctAnswer;
 	private String _id;
 	private String _rev;
 
@@ -308,6 +317,62 @@ public class Question implements Serializable {
 
 	public void setAbstention(final boolean abstention) {
 		this.abstention = abstention;
+	}
+	
+	public boolean isIgnoreCaseSensitive() {
+		return ignoreCaseSensitive;
+	}
+
+	public void setIgnoreCaseSensitive(final boolean ignoreCaseSensitive) {
+		this.ignoreCaseSensitive = ignoreCaseSensitive;
+	}
+
+	public boolean isIgnoreWhitespaces() {
+		return ignoreWhitespaces;
+	}
+
+	public void setIgnoreWhitespaces(final boolean ignoreWhitespaces) {
+		this.ignoreWhitespaces = ignoreWhitespaces;
+	}
+
+	public boolean isIgnorePunctuation() {
+		return ignorePunctuation;
+	}
+
+	public void setIgnorePunctuation(final boolean ignorePunctuation) {
+		this.ignorePunctuation = ignorePunctuation;
+	}
+
+	public boolean isFixedAnswer() {
+		return this.fixedAnswer;
+	}
+
+	public void setFixedAnswer(final boolean fixedAnswer) {
+		this.fixedAnswer = fixedAnswer;
+	}
+
+	public boolean isStrictMode() {
+		return this.strictMode;
+	}
+
+	public void setStrictMode(final boolean strictMode) {
+		this.strictMode = strictMode;
+	}
+
+	public final double getRating() {
+		return this.rating;
+	}
+
+	public final void setRating(final double rating) {
+		this.rating = rating;
+	}
+
+	public final String getCorrectAnswer() {
+		return correctAnswer;
+	}
+
+	public final void setCorrectAnswer(final String correctAnswer) {
+		this.correctAnswer = correctAnswer;
 	}
 
 	@ApiModelProperty(required = true, value = "the couchDB ID")
@@ -597,6 +662,57 @@ public class Question implements Serializable {
 		} else {
 			return calculateRegularValue(answer);
 		}
+	}
+	
+	public String checkCaseSensitive(String answerText) {
+		if(this.isIgnoreCaseSensitive()){
+			this.setCorrectAnswer(this.getCorrectAnswer().toLowerCase());
+			return answerText.toLowerCase();
+		}
+		return answerText;
+	}
+	public String checkWhitespaces(String answerText) {
+		if(this.isIgnoreWhitespaces()){
+			return answerText.replaceAll("[\\s]","");
+		}
+		return answerText;
+	}
+	public String checkPunctuation(String answerText) {
+		if(this.isIgnorePunctuation()){
+			return answerText.replaceAll("[^A-Za-z0-9äöüÄÖÜß\\s]","");
+		}
+		return answerText;
+	}
+
+	public void checkTextStricktOptions(Answer answer) {
+		answer.setAnswerSubjectRaw(this.checkCaseSensitive(answer.getAnswerSubjectRaw()));
+		answer.setAnswerTextRaw(this.checkCaseSensitive(answer.getAnswerTextRaw()));
+		answer.setAnswerSubjectRaw(this.checkPunctuation(answer.getAnswerSubjectRaw()));
+		answer.setAnswerTextRaw(this.checkPunctuation(answer.getAnswerTextRaw()));
+		answer.setAnswerSubjectRaw(this.checkWhitespaces(answer.getAnswerSubjectRaw()));
+		answer.setAnswerTextRaw(this.checkWhitespaces(answer.getAnswerTextRaw()));
+	}
+
+	public double calculateCorrectAnswerFormula(String formula) throws Exception {
+		ScriptEngineManager mgr = new ScriptEngineManager();
+		ScriptEngine engine = mgr.getEngineByName("JavaScript");
+		return Double.parseDouble((String)engine.eval(this.getCorrectAnswer().replaceAll("{x}",String.valueOf(this.getRating()))));
+	}
+
+	public double evaluateCorrectAnswerFixedText(String answerTextRaw){
+		if(answerTextRaw != null){
+			if(answerTextRaw.equals(this.getCorrectAnswer())){
+				return this.getRating();
+			}
+		}
+		return 0;
+	}
+
+	public boolean isSuccessfulFreeTextAnswer(String answerTextRaw){
+		if(answerTextRaw != null){
+			return answerTextRaw.equals(this.getCorrectAnswer());
+		}
+		return false;
 	}
 
 	public void updateRoundStartVariables(Date start, Date end) {
