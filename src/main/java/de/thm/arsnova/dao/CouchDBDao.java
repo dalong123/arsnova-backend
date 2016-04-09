@@ -1411,7 +1411,6 @@ public class CouchDBDao implements IDatabaseDao, ApplicationEventPublisherAware 
 		a.put("sessionId", answer.getSessionId());
 		a.put("questionId", answer.getQuestionId());
 		a.put("answerSubject", answer.getAnswerSubject());
-		a.put("answerSubjectRaw", answer.getAnswerSubjectRaw());
 		a.put("questionVariant", answer.getQuestionVariant());
 		a.put("questionValue", answer.getQuestionValue());
 		a.put("answerText", answer.getAnswerText());
@@ -1469,7 +1468,6 @@ public class CouchDBDao implements IDatabaseDao, ApplicationEventPublisherAware 
 		try {
 			final Document a = database.getDocument(answer.get_id());
 			a.put("answerSubject", answer.getAnswerSubject());
-			a.put("answerSubjectRaw", answer.getAnswerSubjectRaw());
 			a.put("answerText", answer.getAnswerText());
 			a.put("answerTextRaw", answer.getAnswerTextRaw());
 			a.put("freeTextScore", answer.getFreeTextScore());
@@ -1585,7 +1583,7 @@ public class CouchDBDao implements IDatabaseDao, ApplicationEventPublisherAware 
 	}
 
 	@Override
-	@Caching(evict = { @CacheEvict("sessions"), @CacheEvict(cacheNames="sessions", key="#p0.keyword") })
+	@Caching(evict = { @CacheEvict("sessions"), @CacheEvict(cacheNames = "sessions", key = "#p0.keyword") })
 	public void deleteSession(final Session session) {
 		try {
 			deleteDocument(session.get_id());
@@ -2164,7 +2162,6 @@ public class CouchDBDao implements IDatabaseDao, ApplicationEventPublisherAware 
 					answerDoc.put("sessionId", a.getSessionId());
 					answerDoc.put("questionId", a.getQuestionId());
 					answerDoc.put("answerSubject", a.getAnswerSubject());
-					answerDoc.put("answerSubjectRaw", a.getAnswerSubjectRaw());
 					answerDoc.put("questionVariant", a.getQuestionVariant());
 					answerDoc.put("questionValue", a.getQuestionValue());
 					answerDoc.put("answerText", a.getAnswerText());

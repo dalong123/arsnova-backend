@@ -732,14 +732,12 @@ public class QuestionService implements IQuestionService, ApplicationEventPublis
 		Answer theAnswer = answer.generateAnswerEntity(user, question);
 		if ("freetext".equals(question.getQuestionType())) {
 			imageUtils.generateThumbnailImage(theAnswer);
-			theAnswer.setAnswerSubjectRaw(new String(theAnswer.getAnswerSubject()));
 			theAnswer.setAnswerTextRaw(new String(theAnswer.getAnswerText()));
 
-
-			if(question.isStrictMode()){
+			if (question.isStrictMode()) {
 				question.checkTextStricktOptions(theAnswer);
 			}
-			if(question.isFixedAnswer()){
+			if (question.isFixedAnswer()) {
 				theAnswer.setFreeTextScore(question.evaluateCorrectAnswerFixedText(theAnswer.getAnswerTextRaw()));
 				theAnswer.setSuccessfulFreeTextAnswer(question.isSuccessfulFreeTextAnswer(theAnswer.getAnswerTextRaw()));
 			}

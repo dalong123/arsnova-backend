@@ -122,7 +122,6 @@ public class Answer implements Serializable {
 		de.thm.arsnova.entities.Answer theAnswer = new de.thm.arsnova.entities.Answer();
 		theAnswer.setAnswerSubject(this.getAnswerSubject());
 		theAnswer.setAnswerText(this.getAnswerText());
-		theAnswer.setAnswerSubjectRaw(this.getAnswerSubjectRaw());
 		theAnswer.setAnswerTextRaw(this.getAnswerTextRaw());
 		theAnswer.setSessionId(question.getSessionId());
 		theAnswer.setUser(user.getUsername());

@@ -665,51 +665,44 @@ public class Question implements Serializable {
 	}
 	
 	public String checkCaseSensitive(String answerText) {
-		if(this.isIgnoreCaseSensitive()){
+		if (this.isIgnoreCaseSensitive()) {
 			this.setCorrectAnswer(this.getCorrectAnswer().toLowerCase());
 			return answerText.toLowerCase();
 		}
 		return answerText;
 	}
 	public String checkWhitespaces(String answerText) {
-		if(this.isIgnoreWhitespaces()){
-			return answerText.replaceAll("[\\s]","");
+		if (this.isIgnoreWhitespaces()) {
+			this.setCorrectAnswer(this.getCorrectAnswer().replaceAll("[\\s]", ""));
+			return answerText.replaceAll("[\\s]", "");
 		}
 		return answerText;
 	}
 	public String checkPunctuation(String answerText) {
-		if(this.isIgnorePunctuation()){
-			return answerText.replaceAll("[^A-Za-z0-9äöüÄÖÜß\\s]","");
+		if (this.isIgnorePunctuation()) {
+			this.setCorrectAnswer(this.getCorrectAnswer().replaceAll("\\p{Punct}", ""));
+			return answerText.replaceAll("\\p{Punct}", "");
 		}
 		return answerText;
 	}
 
 	public void checkTextStricktOptions(Answer answer) {
-		answer.setAnswerSubjectRaw(this.checkCaseSensitive(answer.getAnswerSubjectRaw()));
 		answer.setAnswerTextRaw(this.checkCaseSensitive(answer.getAnswerTextRaw()));
-		answer.setAnswerSubjectRaw(this.checkPunctuation(answer.getAnswerSubjectRaw()));
 		answer.setAnswerTextRaw(this.checkPunctuation(answer.getAnswerTextRaw()));
-		answer.setAnswerSubjectRaw(this.checkWhitespaces(answer.getAnswerSubjectRaw()));
 		answer.setAnswerTextRaw(this.checkWhitespaces(answer.getAnswerTextRaw()));
 	}
 
-	public double calculateCorrectAnswerFormula(String formula) throws Exception {
-		ScriptEngineManager mgr = new ScriptEngineManager();
-		ScriptEngine engine = mgr.getEngineByName("JavaScript");
-		return Double.parseDouble((String)engine.eval(this.getCorrectAnswer().replaceAll("{x}",String.valueOf(this.getRating()))));
-	}
-
-	public double evaluateCorrectAnswerFixedText(String answerTextRaw){
-		if(answerTextRaw != null){
-			if(answerTextRaw.equals(this.getCorrectAnswer())){
+	public double evaluateCorrectAnswerFixedText(String answerTextRaw) {
+		if (answerTextRaw != null) {
+			if (answerTextRaw.equals(this.getCorrectAnswer())) {
 				return this.getRating();
 			}
 		}
 		return 0;
 	}
 
-	public boolean isSuccessfulFreeTextAnswer(String answerTextRaw){
-		if(answerTextRaw != null){
+	public boolean isSuccessfulFreeTextAnswer(String answerTextRaw) {
+		if (answerTextRaw != null) {
 			return answerTextRaw.equals(this.getCorrectAnswer());
 		}
 		return false;

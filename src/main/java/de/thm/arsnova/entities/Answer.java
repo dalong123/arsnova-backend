@@ -39,7 +39,6 @@ public class Answer implements Serializable {
 	private String answerText;
 	private String answerTextRaw;
 	private String answerSubject;
-	private String answerSubjectRaw;
 	private double freeTextScore;
 	private boolean successfulFreeTextAnswer;
 	private String questionVariant;
@@ -118,14 +117,6 @@ public class Answer implements Serializable {
 
 	public final void setAnswerTextRaw(final String answerTextRaw) {
 		this.answerTextRaw = answerTextRaw;
-	}
-
-	public final String getAnswerSubjectRaw() {
-		return this.answerSubjectRaw;
-	}
-
-	public final void setAnswerSubjectRaw(final String answerSubjectRaw) {
-		this.answerSubjectRaw = answerSubjectRaw;
 	}
 
 	@ApiModelProperty(required = true, value = "the answer subject")
