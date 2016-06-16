@@ -295,7 +295,7 @@
 		<dependency>
 			<groupId>org.stagemonitor</groupId>
 			<artifactId>stagemonitor-web</artifactId>
-			<version>0.18.0</version>
+			<version>0.26.1</version>
 		</dependency>
 	</dependencies>
 
